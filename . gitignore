@@ -1,0 +1,15 @@
+# ignore common files
+node_modules
+.DS_Store
+
+# env / secrets
+.env
+*.env
+
+# don't commit service account keys
+backend/serviceAccountKey.json
+
+# local dev
+frontend/node_modules
+backend/node_modules
+
