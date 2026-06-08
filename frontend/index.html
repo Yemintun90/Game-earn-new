@@ -1,1 +1,93 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Game Earn — Play to Earn</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="particles" id="particles"></div>
 
+  <div class="app-wrapper">
+    <div class="app-header">
+      <div class="brand">
+        <div class="brand-logo">✦</div>
+        <div>
+          <span class="brand-title">GAME EARN</span>
+          <span class="brand-tag">WEB3 TERMINAL</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="header-btn" id="loginBtn">✦ &nbsp; Login / Sign Up</button>
+        <button class="header-btn" id="connectBtn">⬡ &nbsp; Connect Wallet</button>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Network Idle</span>
+      </div>
+      <div class="status-item">
+        ACCOUNT: <span id="statUserEmail" style="color: #00fff0;">Guest User</span>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-value" id="statBalance">0.00</div><div class="stat-label">CLAIMABLE TOKENS</div></div>
+      <div class="stat-card"><div class="stat-value" id="statEarned" style="color:#ff00ff;">0.00</div><div class="stat-label">TOTAL EARNED</div></div>
+      <div class="stat-card"><div class="stat-value" id="statTxn" style="color:#ffd700;">0</div><div class="stat-label">SESSIONS</div></div>
+    </div>
+
+    <div class="main-panel">
+      <div class="panel-title">CORE GAME CONTROLLER</div>
+      <div style="display: flex; gap: 14px; margin-top:15px;">
+        <button id="playBtn" style="flex: 2; padding: 16px; background: linear-gradient(135deg, #00ff88, #00a350); color: #050a1a;">⚡ &nbsp; RUN GAME ENGINE</button>
+        <button id="withdrawBtn" style="flex: 1;">✦ &nbsp; Withdraw</button>
+      </div>
+      <div id="messages" style="margin-top:20px;"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="walletModal">
+    <div class="modal-box">
+      <h3>CONNECT WALLET</h3>
+      <button class="modal-btn-metamask" id="walletMetaMask">CONNECT METAMASK</button>
+      <div class="modal-divider">OR</div>
+      <input type="text" class="modal-input" id="walletInput" placeholder="0x..." />
+      <div class="modal-actions">
+        <button class="modal-btn-cancel" id="walletCancel">CANCEL</button>
+        <button class="modal-btn-confirm" id="walletConfirmManual">CONFIRM</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal-box">
+      <h3>USER AUTHENTICATION</h3>
+      <input type="email" class="modal-input" id="emailInput" placeholder="Enter Email" style="margin-bottom:10px;" />
+      <input type="password" class="modal-input" id="passwordInput" placeholder="Enter Password" style="margin-bottom:15px;" />
+      <div style="display: flex; gap: 10px; margin-bottom:10px;">
+        <button class="modal-btn-confirm" id="loginConfirmAction" style="background:linear-gradient(135deg, #ff00ff, #aa00aa);">SIGN IN</button>
+        <button class="modal-btn-confirm" id="signupConfirmAction" style="background:linear-gradient(135deg, #00c6ff, #0072ff);">SIGN UP</button>
+      </div>
+      <button class="modal-btn-cancel" id="loginCancel">CANCEL</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="withdrawModal">
+    <div class="modal-box">
+      <h3>SECURE WITHDRAW</h3>
+      <input type="number" class="modal-input" id="amountInput" placeholder="0.00" />
+      <div class="modal-actions">
+        <button class="modal-btn-cancel" id="withdrawCancel">CANCEL</button>
+        <button class="modal-btn-confirm" id="withdrawConfirm">CONFIRM CLAIM</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+      </html>
+                                                                                                        
