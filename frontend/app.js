@@ -1,4 +1,5 @@
-const API = window.API_URL || "http://localhost:3000";
+const API = window.API_URL || "https://game-earn-three.vercel.app";
+
 let wallet = "";
 let txnCount = 0;
 let totalEarned = 0;
