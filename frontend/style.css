@@ -1,1 +1,14 @@
-
+body { background-color: #050a1a; color: #e0e8ff; font-family: sans-serif; margin:0; padding:20px; }
+.app-wrapper { max-width: 600px; margin: 0 auto; background: rgba(10,20,50,0.5); padding: 20px; border-radius: 12px; }
+.app-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.header-btn { padding: 8px 12px; background: #00fff0; border: none; font-weight: bold; cursor: pointer; border-radius: 6px; }
+.stats-grid { display: flex; gap: 10px; margin-bottom: 20px; }
+.stat-card { background: #112244; padding: 15px; flex: 1; text-align: center; border-radius: 8px; }
+.stat-value { font-size: 1.5rem; font-weight: bold; color: #00fff0; }
+.main-panel { background: #112244; padding: 20px; border-radius: 8px; }
+button { cursor: pointer; padding: 10px; border-radius: 6px; border:none; font-weight: bold; }
+.modal-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; }
+.modal-overlay.active { display: flex; }
+.modal-box { background: #112244; padding: 20px; border-radius: 10px; width: 280px; text-align: center; }
+.modal-input { width: 100%; padding: 8px; margin-bottom: 10px; background: #000; color: #fff; border: 1px solid #00fff0; }
+        
