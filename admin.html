@@ -291,7 +291,7 @@
         const data = await res.json();
         if (data.success) {
           token = data.token;
-          sessionStorage.setItem(\"adminToken\", token);
+          sessionStorage.setItem("adminToken", token);
           document.getElementById('loginError').style.display = 'none';
           showDashboard();
         } else {
