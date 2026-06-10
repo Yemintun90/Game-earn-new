@@ -17,7 +17,7 @@ export default {
     const expectedAdminToken = btoa(`${ADMIN_EMAIL}:${ADMIN_PASSWORD}`);
 
     if (url.pathname === "/" && request.method === "GET") {
-      return new Response("Game Earn Backend running perfectly on Cloudflare Workers!", {
+      return new Response("Game Earn ChatGPT Backend running perfectly on Cloudflare Workers!", {
         status: 200,
         headers: { "Content-Type": "text/plain; charset=utf-8" }
       });
@@ -123,26 +123,43 @@ export default {
       return new Response(JSON.stringify({ success: true, entry }), { headers });
     }
 
-    // AI Agent Endpoint
+    // ChatGPT (OpenAI) Agent Endpoint
     if (url.pathname === "/api/ai-agent" && request.method === "POST") {
       try {
         const { message } = await request.json();
         if (!message) return new Response(JSON.stringify({ error: "Message required" }), { status: 400, headers });
 
-        const aiResponse = await env.AI.run("@cf/meta/llama-3-8b-instruct", {
-          messages: [
-            { role: "system", content: "You are a helpful game earn assistant agent." },
-            { role: "user", content: message }
-          ]
+        // 
+        const apiKey = env.OPENAI_API_KEY || "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";
+
+        const openAiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${apiKey}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model: "gpt-4o-mini", 
+            messages: [
+              { role: "system", content: "You are a smart game earn assistant agent. Reply friendly." },
+              { role: "user", content: message }
+            ]
+          })
         });
 
-        return new Response(JSON.stringify({ success: true, reply: aiResponse.response }), { headers });
+        const aiData = await openAiResponse.json();
+        
+        if (aiData.error) {
+          return new Response(JSON.stringify({ error: "OpenAI Error: " + aiData.error.message }), { status: 500, headers });
+        }
+
+        return new Response(JSON.stringify({ success: true, reply: aiData.choices[0].message.content }), { headers });
       } catch (err) {
-        return new Response(JSON.stringify({ error: "AI Error: " + err.message }), { status: 500, headers });
+        return new Response(JSON.stringify({ error: "Server Error: " + err.message }), { status: 500, headers });
       }
     }
 
     return new Response(JSON.stringify({ error: "Not Found" }), { status: 404, headers });
   }
 };
-                                                                    
+            
