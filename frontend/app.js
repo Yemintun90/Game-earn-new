@@ -1,4 +1,14 @@
 const API = window.API_URL || "https://game-earn-three.vercel.app";
+const firebaseConfig = {
+ const firebaseConfig = {
+  apiKey: "AIzaSyD38acoFqL4HMrpFfow8ZBT1q-r7G9Xvw8",
+  authDomain: "game-earn-718d5.firebaseapp.com",
+  projectId: "game-earn-718d5",
+  storageBucket: "game-earn-718d5.appspot.com",
+  messagingSenderId: "947907604340",
+  appId: "1:947907604340:web:0567be36482979cc930621",
+  measurementId: "G-3NLRE36ECE"
+};
 
 let wallet = "";
 let txnCount = 0;
