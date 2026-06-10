@@ -48,6 +48,51 @@
       </div>
       <div id="messages" style="margin-top:20px;"></div>
     </div>
+
+    <div class="main-panel" style="margin-top:20px;">
+      <div class="panel-title">GAME ARCADE</div>
+
+      <div class="game-tabs">
+        <button class="game-tab active" data-game="spin">🎡 &nbsp; Spin Wheel</button>
+        <button class="game-tab" data-game="coin">🪙 &nbsp; Coin Flip</button>
+        <button class="game-tab" data-game="dice">🎲 &nbsp; Lucky Dice</button>
+      </div>
+
+      <!-- Spin Wheel -->
+      <section class="game-view active" id="game-spin">
+        <p class="game-desc">စက်ဝိုင်းကို လှည့်ပြီး token ဆုလက်ဆောင် ရယူပါ။ အခမဲ့ ကစားနိုင်သည်။</p>
+        <div class="wheel-wrap">
+          <div class="wheel-pointer"></div>
+          <div class="wheel" id="wheel"></div>
+        </div>
+        <button class="game-action" id="spinBtn">⚡ &nbsp; SPIN NOW</button>
+        <div class="game-result" id="spinResult"></div>
+      </section>
+
+      <!-- Coin Flip -->
+      <section class="game-view" id="game-coin">
+        <p class="game-desc">Token ပမာဏ ထည့်ပြီး Heads/Tails မှန်းပါ။ မှန်ရင် နှစ်ဆ၊ မှားရင် ဆုံးရှုံးမည်။</p>
+        <div class="coin" id="coin"><span id="coinFace">★</span></div>
+        <input type="number" class="modal-input" id="coinBet" placeholder="Bet amount (tokens)" />
+        <div class="game-choice">
+          <button class="game-action choice-btn" data-side="heads">★ &nbsp; HEADS</button>
+          <button class="game-action choice-btn" data-side="tails">✦ &nbsp; TAILS</button>
+        </div>
+        <div class="game-result" id="coinResult"></div>
+      </section>
+
+      <!-- Lucky Dice -->
+      <section class="game-view" id="game-dice">
+        <p class="game-desc">Bet ထည့်ပြီး အံစာ (1-6) HIGH (4-6) သို့မဟုတ် LOW (1-3) မှန်းပါ။ မှန်ရင် နှစ်ဆ။</p>
+        <div class="dice" id="dice">?</div>
+        <input type="number" class="modal-input" id="diceBet" placeholder="Bet amount (tokens)" />
+        <div class="game-choice">
+          <button class="game-action choice-btn" data-pick="low">▼ &nbsp; LOW (1-3)</button>
+          <button class="game-action choice-btn" data-pick="high">▲ &nbsp; HIGH (4-6)</button>
+        </div>
+        <div class="game-result" id="diceResult"></div>
+      </section>
+    </div>
   </div>
 
   <div class="modal-overlay" id="walletModal">

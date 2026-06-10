@@ -147,6 +147,141 @@ document.getElementById('withdrawConfirm').addEventListener('click', () => {
   alert("Withdraw Request တင်ခြင်း အောင်မြင်ပါသည်");
 });
 
+// ===== Game helpers =====
+function persistEarnings() {
+  localStorage.setItem("totalEarned", String(totalEarned));
+  localStorage.setItem("txnCount", String(txnCount));
+  localStorage.setItem("balance", String(balance));
+  refreshStats();
+}
+
+function requireLogin() {
+  if (!isLoggedIn) { alert("ကစားရန် အရင်ဆုံး Login ဝင်ပေးပါ"); return false; }
+  return true;
+}
+
+function showResult(elId, text, won) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.textContent = text;
+  el.className = "game-result " + (won ? "win" : "lose");
+}
+
+// ----- Game tab switching -----
+document.querySelectorAll('.game-tab').forEach((tab) => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.game-tab').forEach((t) => t.classList.remove('active'));
+    document.querySelectorAll('.game-view').forEach((v) => v.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('game-' + tab.dataset.game).classList.add('active');
+  });
+});
+
+// ----- 1) Spin Wheel -----
+const WHEEL_SEGMENTS = [
+  { label: "0.10", value: 0.10, color: "#00fff0" },
+  { label: "0.50", value: 0.50, color: "#ff00ff" },
+  { label: "0.05", value: 0.05, color: "#ffd700" },
+  { label: "1.00", value: 1.00, color: "#00ff88" },
+  { label: "0.20", value: 0.20, color: "#00a3ff" },
+  { label: "2.00", value: 2.00, color: "#ff5577" },
+];
+let wheelAngle = 0;
+let spinning = false;
+
+(function buildWheel() {
+  const wheel = document.getElementById('wheel');
+  if (!wheel) return;
+  const seg = 360 / WHEEL_SEGMENTS.length;
+  const stops = WHEEL_SEGMENTS.map((s, i) => `${s.color} ${i * seg}deg ${(i + 1) * seg}deg`).join(", ");
+  wheel.style.background = `conic-gradient(${stops})`;
+})();
+
+document.getElementById('spinBtn').addEventListener('click', () => {
+  if (!requireLogin() || spinning) return;
+  spinning = true;
+  const wheel = document.getElementById('wheel');
+  const idx = Math.floor(Math.random() * WHEEL_SEGMENTS.length);
+  const seg = 360 / WHEEL_SEGMENTS.length;
+  // Land pointer (top) on the chosen segment center.
+  const target = 360 * 5 + (360 - (idx * seg + seg / 2));
+  wheelAngle += target;
+  wheel.style.transform = `rotate(${wheelAngle}deg)`;
+  showResult('spinResult', "လှည့်နေသည်...", true);
+  setTimeout(() => {
+    const prize = WHEEL_SEGMENTS[idx].value;
+    balance += prize; totalEarned += prize; txnCount++;
+    persistEarnings();
+    showResult('spinResult', `🎉 +${prize.toFixed(2)} tokens ရရှိသည်!`, true);
+    spinning = false;
+  }, 4100);
+});
+
+// ----- 2) Coin Flip -----
+let coinBusy = false;
+document.querySelectorAll('#game-coin .choice-btn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    if (!requireLogin() || coinBusy) return;
+    const bet = parseFloat(document.getElementById('coinBet').value);
+    if (!bet || bet <= 0) return alert("Bet ပမာဏ ထည့်ပါ");
+    if (bet > balance) return alert("Balance မလုံလောက်ပါ");
+    coinBusy = true;
+    balance -= bet; persistEarnings();
+    const coin = document.getElementById('coin');
+    coin.classList.add('flipping');
+    showResult('coinResult', "လှန်နေသည်...", true);
+    setTimeout(() => {
+      const result = Math.random() < 0.5 ? "heads" : "tails";
+      document.getElementById('coinFace').textContent = result === "heads" ? "★" : "✦";
+      coin.classList.remove('flipping');
+      txnCount++;
+      if (result === btn.dataset.side) {
+        const win = bet * 2;
+        balance += win; totalEarned += bet;
+        showResult('coinResult', `🎉 ${result.toUpperCase()}! +${win.toFixed(2)} tokens`, true);
+      } else {
+        showResult('coinResult', `💥 ${result.toUpperCase()}! -${bet.toFixed(2)} tokens`, false);
+      }
+      persistEarnings();
+      coinBusy = false;
+    }, 1900);
+  });
+});
+
+// ----- 3) Lucky Dice -----
+const DICE_FACES = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
+let diceBusy = false;
+document.querySelectorAll('#game-dice .choice-btn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    if (!requireLogin() || diceBusy) return;
+    const bet = parseFloat(document.getElementById('diceBet').value);
+    if (!bet || bet <= 0) return alert("Bet ပမာဏ ထည့်ပါ");
+    if (bet > balance) return alert("Balance မလုံလောက်ပါ");
+    diceBusy = true;
+    balance -= bet; persistEarnings();
+    const diceEl = document.getElementById('dice');
+    diceEl.classList.add('rolling');
+    showResult('diceResult', "လှိမ့်နေသည်...", true);
+    setTimeout(() => {
+      const roll = Math.floor(Math.random() * 6) + 1;
+      diceEl.classList.remove('rolling');
+      diceEl.textContent = DICE_FACES[roll - 1];
+      const isHigh = roll >= 4;
+      const picked = btn.dataset.pick;
+      txnCount++;
+      if ((picked === "high" && isHigh) || (picked === "low" && !isHigh)) {
+        const win = bet * 2;
+        balance += win; totalEarned += bet;
+        showResult('diceResult', `🎉 ${roll} ထွက်သည်! +${win.toFixed(2)} tokens`, true);
+      } else {
+        showResult('diceResult', `💥 ${roll} ထွက်သည်! -${bet.toFixed(2)} tokens`, false);
+      }
+      persistEarnings();
+      diceBusy = false;
+    }, 1500);
+  });
+});
+
 // ===== Restore session on load =====
 (function init() {
   const saved = localStorage.getItem("currentUser");
