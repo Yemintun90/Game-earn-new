@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cp admin.html frontend/admin.html",
+  "outputDirectory": "frontend",
+  "cleanUrls": true
+}
