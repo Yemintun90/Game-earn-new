@@ -1,14 +1,14 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "game-earn-terminal",
-  "compatibility_date": "2026-06-08",
-  "observability": {
-    "enabled": true
+  "name": "game-earn-new",
+  "main": "backend/server.js",
+  "compatibility_date": "2026-06-10",
+  "ai": {
+    "binding": "AI"
   },
-  "assets": {
-    "directory": "frontend"
-  },
-  "compatibility_flags": [
-    "nodejs_compat"
+  "kv_namespaces": [
+    {
+      "binding": "GAME_DB",
+      "id": "မင်းတို့ရဲ့_KV_ID_ကိုဒီမှာထည့်ရန်"
+    }
   ]
 }
