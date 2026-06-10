@@ -8,7 +8,6 @@ export default {
       "Content-Type": "application/json"
     };
 
-    // CORS preflight requests အတွက်
     if (request.method === "OPTIONS") {
       return new Response(null, { headers });
     }
@@ -17,7 +16,6 @@ export default {
     const ADMIN_PASSWORD = env.ADMIN_PASSWORD || "admin1234";
     const expectedAdminToken = btoa(`${ADMIN_EMAIL}:${ADMIN_PASSWORD}`);
 
-    // ပင်မစာမျက်နှာ (Page ဖွင့်ရင် မြင်ရမယ့်နေရာ)
     if (url.pathname === "/" && request.method === "GET") {
       return new Response("Game Earn Backend running perfectly on Cloudflare Workers!", {
         status: 200,
@@ -25,7 +23,6 @@ export default {
       });
     }
 
-    // 1. USER SIGNUP
     if (url.pathname === "/api/user/signup" && request.method === "POST") {
       try {
         const { email, password } = await request.json();
@@ -43,7 +40,6 @@ export default {
       }
     }
 
-    // 2. USER LOGIN
     if (url.pathname === "/api/user/login" && request.method === "POST") {
       const { email, password } = await request.json();
       let users = JSON.parse((await env.GAME_DB.get("users")) || "[]");
@@ -57,7 +53,6 @@ export default {
       }
     }
 
-    // 3. WALLET CONNECT
     if (url.pathname === "/wallet" && request.method === "POST") {
       const { address } = await request.json();
       if (!address) return new Response(JSON.stringify({ error: "address required" }), { status: 400, headers });
@@ -70,7 +65,6 @@ export default {
       return new Response(JSON.stringify({ status: "wallet linked" }), { headers });
     }
 
-    // 4. WITHDRAW REQUEST
     if (url.pathname === "/withdraw" && request.method === "POST") {
       const { wallet, amount } = await request.json();
       if (!amount) return new Response(JSON.stringify({ error: "amount required" }), { status: 400, headers });
@@ -83,7 +77,6 @@ export default {
       return new Response(JSON.stringify({ status: "pending", wallet, amount }), { headers });
     }
 
-    // 5. ADMIN LOGIN
     if (url.pathname === "/admin/login" && request.method === "POST") {
       const { email, password } = await request.json();
       if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
@@ -93,11 +86,9 @@ export default {
       }
     }
 
-    // ADMIN AUTH CHECK
     const adminToken = request.headers.get("x-admin-token");
     const isAdmin = adminToken && adminToken === expectedAdminToken;
 
-    // 6. ADMIN DATA GET
     if (url.pathname === "/admin/data" && request.method === "GET") {
       if (!isAdmin) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers });
 
@@ -117,7 +108,6 @@ export default {
       }), { headers });
     }
 
-    // 7. ADMIN UPDATE WITHDRAW STATUS
     if (url.pathname.startsWith("/admin/withdraw/") && request.method === "PATCH") {
       if (!isAdmin) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers });
 
@@ -133,13 +123,12 @@ export default {
       return new Response(JSON.stringify({ success: true, entry }), { headers });
     }
 
-    // 8. AI AGENT CHAT (မေးခွန်းမေးမြန်းရန် AI စနစ်သစ်)
+    // AI Agent စနစ်သစ်
     if (url.pathname === "/api/ai-agent" && request.method === "POST") {
       try {
         const { message } = await request.json();
         if (!message) return new Response(JSON.stringify({ error: "Message required" }), { status: 400, headers });
 
-        // သင့်တော်မည့် Llama 3 Model ကို ထည့်သွင်းထားသည်
         const aiResponse = await env.AI.run("@cf/meta/llama-3-8b-instruct", {
           messages: [
             { role: "system", content: "You are a helpful game earn assistant agent." },
@@ -156,4 +145,5 @@ export default {
     return new Response(JSON.stringify({ error: "Not Found" }), { status: 404, headers });
   }
 };
+
 
