@@ -1,0 +1,49 @@
+name: Auto Fix & Create PR
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  auto-fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
+      - name: Run linters / formatters (auto-fix)
+        run: |
+          # Adjust commands to your repo. Example uses eslint and prettier.
+          npx eslint . --ext .js,.jsx,.ts,.tsx --fix || true
+          npx prettier --write "**/*.{js,jsx,ts,tsx,json,css,md}" || true
+
+      - name: Run tests
+        run: |
+          if npm run | grep -q "test"; then npm test --silent; else echo "No test script"; fi
+
+      - name: Create pull request with fixes (if any)
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: chore: apply automatic lint/format fixes
+          branch: auto-fixes/${{ github.run_id }}
+          title: Automated fixes: lint & format
+          body: |
+            This pull request was created automatically by the CI to apply lint and formatting fixes.
+            Please review and merge if everything looks good.
+          labels: automated, ci
+          signoff: false
